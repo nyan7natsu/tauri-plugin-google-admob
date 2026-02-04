@@ -83,6 +83,12 @@ Add the Google Mobile Ads SDK to your Android configuration:
 
 **android/build.gradle.kts:**
 ```kotlin
+    composeOptions {
+        kotlinCompilerExtensionVersion = "2.1.0" 
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 dependencies {
     implementation("com.google.android.gms:play-services-ads:24.9.0")
 }
