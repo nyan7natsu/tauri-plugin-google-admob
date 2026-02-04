@@ -1,0 +1,16 @@
+[default]
+description = "Default permissions for the plugin - allows all ad operations"
+permissions = [
+    "allow-ping",
+    "allow-initialize",
+    "allow-show-banner",
+    "allow-hide-banner",
+    "allow-prepare-interstitial",
+    "allow-show-interstitial",
+    "allow-prepare-rewarded",
+    "allow-show-rewarded",
+    "allow-prepare-rewarded-interstitial",
+    "allow-show-rewarded-interstitial",
+    "allow-prepare-app-open",
+    "allow-show-app-open"
+]
