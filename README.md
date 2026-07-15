@@ -372,3 +372,57 @@ at your option.
 
 - [Google Mobile Ads SDK](https://developers.google.com/admob/android/quick-start)
 - [Tauri](https://tauri.app/) - Build smaller, faster, and more secure desktop applications
+
+---
+
+## iOS Support
+
+This fork adds the iOS implementation that upstream lacks:
+
+- `ios/Package.swift` – SwiftPM package depending on Google Mobile Ads SDK v12
+- `ios/Sources/AdmobPlugin.swift` – same command surface as the Android plugin
+  (initialize, banner, interstitial, rewarded, rewarded interstitial, app open,
+  plus the `adEvent` plugin event)
+- `build.rs` – custom `swift build --triple <ios-triple>` invocation instead of
+  `.ios_path()`. The stock tauri-plugin/swift-rs pipeline builds Swift packages
+  with a macOS build plan, which cannot resolve binary xcframework dependencies
+  (GoogleMobileAds) and fails with "no such module".
+
+### App setup (iOS)
+
+The GMA SDK ships as static xcframeworks which SwiftPM extracts into
+`ios/.build/artifacts/` during the Rust build. Your app's Xcode project
+(`src-tauri/gen/apple/project.yml`) needs to reference them for the final link:
+
+```yaml
+targets:
+  <your-app>_iOS:
+    settings:
+      base:
+        # Adjust the relative path to wherever this plugin lives
+        FRAMEWORK_SEARCH_PATHS[sdk=iphoneos*]: $(inherited) <plugin>/ios/.build/artifacts/swift-package-manager-google-mobile-ads/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64 <plugin>/ios/.build/artifacts/swift-package-manager-google-user-messaging-platform/UserMessagingPlatform/UserMessagingPlatform.xcframework/ios-arm64
+        FRAMEWORK_SEARCH_PATHS[sdk=iphonesimulator*]: $(inherited) <plugin>/ios/.build/artifacts/swift-package-manager-google-mobile-ads/GoogleMobileAds/GoogleMobileAds.xcframework/ios-arm64_x86_64-simulator <plugin>/ios/.build/artifacts/swift-package-manager-google-user-messaging-platform/UserMessagingPlatform/UserMessagingPlatform.xcframework/ios-arm64_x86_64-simulator
+        OTHER_LDFLAGS: $(inherited) -framework GoogleMobileAds -framework UserMessagingPlatform
+        # Xcode 16+ debug-dylib splitting breaks Swift symbolic references from
+        # the statically linked plugin code on physical devices
+        ENABLE_DEBUG_DYLIB: false
+```
+
+Then run `xcodegen generate` inside `gen/apple`.
+
+Info.plist requirements (via `project.yml` → `info.properties`):
+
+```yaml
+GADApplicationIdentifier: ca-app-pub-xxxxxxxxxxxxxxxx~yyyyyyyyyy  # your AdMob app ID
+SKAdNetworkItems:
+  - SKAdNetworkIdentifier: cstr6suwn9.skadnetwork
+```
+
+Recommended minimum iOS version: 15.0 (`bundle > iOS > minimumSystemVersion`
+in `tauri.conf.json`).
+
+### Behavioral difference vs Android
+
+`show_rewarded` / `show_rewarded_interstitial` resolve when the ad is
+**dismissed** (with `reward` present only if it was earned), instead of only
+resolving when a reward is earned.

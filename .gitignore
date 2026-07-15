@@ -15,3 +15,7 @@ node_modules/
 
 dist-js
 dist
+
+# SwiftPM build artifacts (iOS)
+ios/.build/
+ios/Package.resolved
