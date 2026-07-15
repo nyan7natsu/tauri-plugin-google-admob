@@ -2,6 +2,8 @@
 description = "Default permissions for the plugin - allows all ad operations"
 permissions = [
     "allow-ping",
+    "allow-register-listener",
+    "allow-remove-listener",
     "allow-initialize",
     "allow-show-banner",
     "allow-hide-banner",

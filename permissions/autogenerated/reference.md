@@ -5,6 +5,8 @@ Default permissions for the plugin - allows all ad operations
 #### This default permission set includes the following:
 
 - `allow-ping`
+- `allow-register-listener`
+- `allow-remove-listener`
 - `allow-initialize`
 - `allow-show-banner`
 - `allow-hide-banner`
@@ -25,58 +27,6 @@ Default permissions for the plugin - allows all ad operations
 <th>Description</th>
 </tr>
 
-
-<tr>
-<td>
-
-`google-admob:allow-initialize`
-
-</td>
-<td>
-
-Enables the initialize command without any pre-configured scope.
-
-</td>
-</tr>
-
-<tr>
-<td>
-
-`google-admob:deny-initialize`
-
-</td>
-<td>
-
-Denies the initialize command without any pre-configured scope.
-
-</td>
-</tr>
-
-<tr>
-<td>
-
-`google-admob:allow-show-banner`
-
-</td>
-<td>
-
-Enables the show_banner command without any pre-configured scope.
-
-</td>
-</tr>
-
-<tr>
-<td>
-
-`google-admob:deny-show-banner`
-
-</td>
-<td>
-
-Denies the show_banner command without any pre-configured scope.
-
-</td>
-</tr>
 
 <tr>
 <td>
@@ -107,25 +57,12 @@ Denies the hide_banner command without any pre-configured scope.
 <tr>
 <td>
 
-`google-admob:allow-prepare-interstitial`
+`google-admob:allow-initialize`
 
 </td>
 <td>
 
-Enables the prepare_interstitial command without any pre-configured scope.
-
-</td>
-</tr>
-
-<tr>
-<td>
-
-`google-admob:deny-prepare-interstitial`
-
-</td>
-<td>
-
-Denies the prepare_interstitial command without any pre-configured scope.
+Enables the initialize command without any pre-configured scope.
 
 </td>
 </tr>
@@ -133,25 +70,12 @@ Denies the prepare_interstitial command without any pre-configured scope.
 <tr>
 <td>
 
-`google-admob:allow-show-interstitial`
+`google-admob:deny-initialize`
 
 </td>
 <td>
 
-Enables the show_interstitial command without any pre-configured scope.
-
-</td>
-</tr>
-
-<tr>
-<td>
-
-`google-admob:deny-show-interstitial`
-
-</td>
-<td>
-
-Denies the show_interstitial command without any pre-configured scope.
+Denies the initialize command without any pre-configured scope.
 
 </td>
 </tr>
@@ -159,25 +83,12 @@ Denies the show_interstitial command without any pre-configured scope.
 <tr>
 <td>
 
-`google-admob:allow-prepare-rewarded`
+`google-admob:allow-ping`
 
 </td>
 <td>
 
-Enables the prepare_rewarded command without any pre-configured scope.
-
-</td>
-</tr>
-
-<tr>
-<td>
-
-`google-admob:deny-prepare-rewarded`
-
-</td>
-<td>
-
-Denies the prepare_rewarded command without any pre-configured scope.
+Enables the ping command without any pre-configured scope.
 
 </td>
 </tr>
@@ -185,77 +96,12 @@ Denies the prepare_rewarded command without any pre-configured scope.
 <tr>
 <td>
 
-`google-admob:allow-show-rewarded`
+`google-admob:deny-ping`
 
 </td>
 <td>
 
-Enables the show_rewarded command without any pre-configured scope.
-
-</td>
-</tr>
-
-<tr>
-<td>
-
-`google-admob:deny-show-rewarded`
-
-</td>
-<td>
-
-Denies the show_rewarded command without any pre-configured scope.
-
-</td>
-</tr>
-
-<tr>
-<td>
-
-`google-admob:allow-prepare-rewarded-interstitial`
-
-</td>
-<td>
-
-Enables the prepare_rewarded_interstitial command without any pre-configured scope.
-
-</td>
-</tr>
-
-<tr>
-<td>
-
-`google-admob:deny-prepare-rewarded-interstitial`
-
-</td>
-<td>
-
-Denies the prepare_rewarded_interstitial command without any pre-configured scope.
-
-</td>
-</tr>
-
-<tr>
-<td>
-
-`google-admob:allow-show-rewarded-interstitial`
-
-</td>
-<td>
-
-Enables the show_rewarded_interstitial command without any pre-configured scope.
-
-</td>
-</tr>
-
-<tr>
-<td>
-
-`google-admob:deny-show-rewarded-interstitial`
-
-</td>
-<td>
-
-Denies the show_rewarded_interstitial command without any pre-configured scope.
+Denies the ping command without any pre-configured scope.
 
 </td>
 </tr>
@@ -289,6 +135,136 @@ Denies the prepare_app_open command without any pre-configured scope.
 <tr>
 <td>
 
+`google-admob:allow-prepare-interstitial`
+
+</td>
+<td>
+
+Enables the prepare_interstitial command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`google-admob:deny-prepare-interstitial`
+
+</td>
+<td>
+
+Denies the prepare_interstitial command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`google-admob:allow-prepare-rewarded`
+
+</td>
+<td>
+
+Enables the prepare_rewarded command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`google-admob:deny-prepare-rewarded`
+
+</td>
+<td>
+
+Denies the prepare_rewarded command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`google-admob:allow-prepare-rewarded-interstitial`
+
+</td>
+<td>
+
+Enables the prepare_rewarded_interstitial command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`google-admob:deny-prepare-rewarded-interstitial`
+
+</td>
+<td>
+
+Denies the prepare_rewarded_interstitial command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`google-admob:allow-register-listener`
+
+</td>
+<td>
+
+Enables the register_listener command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`google-admob:deny-register-listener`
+
+</td>
+<td>
+
+Denies the register_listener command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`google-admob:allow-remove-listener`
+
+</td>
+<td>
+
+Enables the remove_listener command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`google-admob:deny-remove-listener`
+
+</td>
+<td>
+
+Denies the remove_listener command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
 `google-admob:allow-show-app-open`
 
 </td>
@@ -315,12 +291,12 @@ Denies the show_app_open command without any pre-configured scope.
 <tr>
 <td>
 
-`google-admob:allow-ping`
+`google-admob:allow-show-banner`
 
 </td>
 <td>
 
-Enables the ping command without any pre-configured scope.
+Enables the show_banner command without any pre-configured scope.
 
 </td>
 </tr>
@@ -328,12 +304,90 @@ Enables the ping command without any pre-configured scope.
 <tr>
 <td>
 
-`google-admob:deny-ping`
+`google-admob:deny-show-banner`
 
 </td>
 <td>
 
-Denies the ping command without any pre-configured scope.
+Denies the show_banner command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`google-admob:allow-show-interstitial`
+
+</td>
+<td>
+
+Enables the show_interstitial command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`google-admob:deny-show-interstitial`
+
+</td>
+<td>
+
+Denies the show_interstitial command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`google-admob:allow-show-rewarded`
+
+</td>
+<td>
+
+Enables the show_rewarded command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`google-admob:deny-show-rewarded`
+
+</td>
+<td>
+
+Denies the show_rewarded command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`google-admob:allow-show-rewarded-interstitial`
+
+</td>
+<td>
+
+Enables the show_rewarded_interstitial command without any pre-configured scope.
+
+</td>
+</tr>
+
+<tr>
+<td>
+
+`google-admob:deny-show-rewarded-interstitial`
+
+</td>
+<td>
+
+Denies the show_rewarded_interstitial command without any pre-configured scope.
 
 </td>
 </tr>
