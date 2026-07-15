@@ -76,6 +76,56 @@ npm install github:nyan7natsu/tauri-plugin-admob
 
 依存を増やしたくない場合は，[`guest-js/index.ts`](guest-js/index.ts) を直接アプリにコピーしても動きます(依存は `@tauri-apps/api` のみ)．
 
+### サブモジュール運用(iOSで使うなら推奨)
+
+Cargoのgit依存はチェックアウト先が `~/.cargo/git/checkouts/<名前>-<ハッシュ>/<コミット>/` となり
+**パスが安定しない**ため，後述するiOSの `FRAMEWORK_SEARCH_PATHS` から参照できません．
+iOSで使う場合はサブモジュールとしてアプリリポジトリ内に置くのが確実です．
+
+```sh
+# アプリリポジトリのルートで
+git submodule add https://github.com/nyan7natsu/tauri-plugin-admob plugins/tauri-plugin-admob
+```
+
+Rust側は git 依存の代わりに**パス依存**にします:
+
+```toml
+# src-tauri/Cargo.toml
+[dependencies]
+tauri-plugin-google-admob = { path = "../plugins/tauri-plugin-admob" }
+```
+
+JS側はパスの安定性と無関係なので，前述の `pnpm add github:...` のままで問題ありません
+(サブモジュールに合わせたければ `guest-js/index.ts` のコピーでも可)．
+
+iOSの `FRAMEWORK_SEARCH_PATHS`(後述)は `$(SRCROOT)` = `src-tauri/gen/apple` からの相対で書けます．
+プラグインをリポジトリ直下の `plugins/` に置いた場合:
+
+```
+$(SRCROOT)/../../../plugins/tauri-plugin-admob/ios/.build/artifacts/...
+```
+
+日常運用のコマンド:
+
+```sh
+# クローン時(サブモジュールも一緒に取得)
+git clone --recurse-submodules <アプリのリポジトリ>
+# 既存のクローンに後から取得
+git submodule update --init
+
+# プラグインの更新を取り込む(親リポジトリには「参照コミットの変更」として記録される)
+git -C plugins/tauri-plugin-admob pull origin main
+git add plugins/tauri-plugin-admob
+git commit -m "chore: update tauri-plugin-admob"
+```
+
+補足:
+
+- ビルド生成物(`ios/.build/`，`.tauri/`，`target/`)はプラグイン側の `.gitignore` で
+  無視されるため，ビルドしてもサブモジュールは dirty になりません
+- プラグインに手を入れたい場合はサブモジュール内で直接編集 → プラグイン側リポジトリへ
+  commit/push → 親リポジトリで参照コミットを更新，という流れになります
+
 ### 3. Android セットアップ
 
 `src-tauri/gen/android/app/src/main/AndroidManifest.xml` の `<application>` 内にAdMobアプリIDを追加:
@@ -100,9 +150,9 @@ npm install github:nyan7natsu/tauri-plugin-admob
 }
 ```
 
-`src-tauri/gen/apple/project.yml` のアプリターゲットに以下を追加
-(`<plugin>` はこのプラグインの場所．git依存なら `$HOME/.cargo/git/checkouts/...` になるため，
-パスが安定するパスローカル依存やサブモジュール運用を推奨):
+`src-tauri/gen/apple/project.yml` のアプリターゲットに以下を追加します．
+`<plugin>` はこのプラグインの場所で，[サブモジュール運用](#サブモジュール運用iosで使うなら推奨)なら
+`$(SRCROOT)/../../../plugins/tauri-plugin-admob` のように相対パスで書けます:
 
 ```yaml
 targets:
