@@ -29,6 +29,9 @@ pub struct BannerAdOptions {
     pub position: BannerPosition,
     #[serde(default)]
     pub ad_size: BannerSize,
+    /// Distance in points/dp between the banner and the anchored screen edge.
+    #[serde(default)]
+    pub offset: Option<f64>,
 }
 
 fn default_banner_position() -> BannerPosition {
@@ -59,6 +62,9 @@ pub enum BannerSize {
 #[serde(rename_all = "camelCase")]
 pub struct ShowBannerResponse {
     pub shown: bool,
+    /// Height of the banner in points/dp, so the web content can pad itself.
+    #[serde(default)]
+    pub height: f64,
 }
 
 #[derive(Debug, Clone, Default, Deserialize, Serialize)]

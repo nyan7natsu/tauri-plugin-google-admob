@@ -15,6 +15,7 @@ struct BannerAdArgs: Decodable {
   let adUnitId: String
   var position: String?
   var adSize: String?
+  var offset: Double?
 }
 
 struct AdUnitArgs: Decodable {
@@ -33,6 +34,7 @@ struct InitializeResponse: Encodable {
 
 struct ShowBannerResponse: Encodable {
   let shown: Bool
+  let height: Double
 }
 
 struct HideBannerResponse: Encodable {
@@ -201,29 +203,33 @@ class AdmobPlugin: Plugin, BannerViewDelegate {
       let containerView: UIView = rootVC.view
       let contentWidth = containerView.frame.inset(by: containerView.safeAreaInsets).width
 
-      let banner = BannerView(adSize: self.adSize(for: args.adSize ?? "BANNER", width: contentWidth))
+      let size = self.adSize(for: args.adSize ?? "BANNER", width: contentWidth)
+      let banner = BannerView(adSize: size)
       banner.adUnitID = args.adUnitId
       banner.rootViewController = rootVC
       banner.delegate = self
       banner.translatesAutoresizingMaskIntoConstraints = false
 
       containerView.addSubview(banner)
+      let offset = CGFloat(args.offset ?? 0)
       var constraints = [
         banner.centerXAnchor.constraint(equalTo: containerView.centerXAnchor)
       ]
       if (args.position ?? "bottom").lowercased() == "top" {
         constraints.append(
-          banner.topAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.topAnchor))
+          banner.topAnchor.constraint(
+            equalTo: containerView.safeAreaLayoutGuide.topAnchor, constant: offset))
       } else {
         constraints.append(
-          banner.bottomAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.bottomAnchor))
+          banner.bottomAnchor.constraint(
+            equalTo: containerView.safeAreaLayoutGuide.bottomAnchor, constant: -offset))
       }
       NSLayoutConstraint.activate(constraints)
 
       banner.load(Request())
       self.bannerView = banner
 
-      invoke.resolve(ShowBannerResponse(shown: true))
+      invoke.resolve(ShowBannerResponse(shown: true, height: size.size.height))
     }
   }
 

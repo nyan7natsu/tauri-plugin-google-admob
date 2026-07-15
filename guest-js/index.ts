@@ -26,10 +26,14 @@ export interface BannerAdOptions {
   adUnitId: string
   position?: BannerPosition
   adSize?: BannerSize
+  /** Distance in points/dp between the banner and the anchored screen edge */
+  offset?: number
 }
 
 export interface ShowBannerResult {
   shown: boolean
+  /** Height of the banner in points/dp (use it to pad your content) */
+  height?: number
 }
 
 export interface HideBannerResult {
@@ -155,6 +159,7 @@ export async function showBanner(
       adUnitId: options.adUnitId,
       position: options.position ?? 'bottom',
       adSize: options.adSize ?? 'BANNER',
+      offset: options.offset ?? 0,
     },
   })
 }

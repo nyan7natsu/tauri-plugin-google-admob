@@ -36,6 +36,7 @@ class BannerAdArgs {
     lateinit var adUnitId: String
     var position: String = "bottom"
     var adSize: String = "BANNER"
+    var offset: Double = 0.0
 }
 
 @InvokeArg
@@ -146,11 +147,13 @@ class AdmobPlugin(private val activity: Activity) : Plugin(activity) {
             try {
                 // Remove existing banner if any
                 hideBannerInternal()
-                
+
+                val size = getAdSize(args.adSize)
+
                 // Create new AdView
                 bannerAdView = AdView(activity).apply {
                     adUnitId = args.adUnitId
-                    setAdSize(getAdSize(args.adSize))
+                    setAdSize(size)
                     
                     adListener = object : AdListener() {
                         override fun onAdLoaded() {
@@ -186,14 +189,21 @@ class AdmobPlugin(private val activity: Activity) : Plugin(activity) {
                 }
                 
                 // Create container for banner
+                val offsetPx = (args.offset * activity.resources.displayMetrics.density).toInt()
                 val bannerContainer = FrameLayout(activity).apply {
                     layoutParams = FrameLayout.LayoutParams(
                         FrameLayout.LayoutParams.MATCH_PARENT,
                         FrameLayout.LayoutParams.WRAP_CONTENT
                     ).apply {
                         gravity = when (args.position.lowercase()) {
-                            "top" -> Gravity.TOP or Gravity.CENTER_HORIZONTAL
-                            else -> Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+                            "top" -> {
+                                topMargin = offsetPx
+                                Gravity.TOP or Gravity.CENTER_HORIZONTAL
+                            }
+                            else -> {
+                                bottomMargin = offsetPx
+                                Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+                            }
                         }
                     }
                     addView(bannerAdView)
@@ -209,6 +219,7 @@ class AdmobPlugin(private val activity: Activity) : Plugin(activity) {
                 
                 val ret = JSObject()
                 ret.put("shown", true)
+                ret.put("height", size.height)
                 invoke.resolve(ret)
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to show banner: ${e.message}")
