@@ -26,7 +26,10 @@ impl<R: Runtime> GoogleAdmob<R> {
 
     pub fn show_banner(&self, _payload: BannerAdOptions) -> crate::Result<ShowBannerResponse> {
         // Desktop doesn't support AdMob, return mock response
-        Ok(ShowBannerResponse { shown: false })
+        Ok(ShowBannerResponse {
+            shown: false,
+            height: 0.0,
+        })
     }
 
     pub fn hide_banner(&self) -> crate::Result<HideBannerResponse> {
