@@ -1,4 +1,4 @@
-import { invoke } from '@tauri-apps/api/core'
+import { invoke, addPluginListener, PluginListener } from '@tauri-apps/api/core'
 
 // ============== Types ==============
 
@@ -121,13 +121,26 @@ export interface AdEvent {
 
 // ============== Test Ad Unit IDs ==============
 
-export const TestAdUnitIds = {
-  BANNER: 'ca-app-pub-3940256099942544/9214589741',
-  INTERSTITIAL: 'ca-app-pub-3940256099942544/1033173712',
-  REWARDED: 'ca-app-pub-3940256099942544/5224354917',
-  REWARDED_INTERSTITIAL: 'ca-app-pub-3940256099942544/5354046379',
-  APP_OPEN: 'ca-app-pub-3940256099942544/9257395921',
-} as const
+const isIos =
+  typeof navigator !== 'undefined' && /iPhone|iPad|iPod/.test(navigator.userAgent)
+
+// Google publishes separate sample ad units for Android and iOS; using the
+// wrong platform's ID still loads but is not guaranteed to keep working.
+export const TestAdUnitIds = isIos
+  ? {
+      BANNER: 'ca-app-pub-3940256099942544/2934735716',
+      INTERSTITIAL: 'ca-app-pub-3940256099942544/4411468910',
+      REWARDED: 'ca-app-pub-3940256099942544/1712485313',
+      REWARDED_INTERSTITIAL: 'ca-app-pub-3940256099942544/6978759866',
+      APP_OPEN: 'ca-app-pub-3940256099942544/5575463023',
+    }
+  : {
+      BANNER: 'ca-app-pub-3940256099942544/9214589741',
+      INTERSTITIAL: 'ca-app-pub-3940256099942544/1033173712',
+      REWARDED: 'ca-app-pub-3940256099942544/5224354917',
+      REWARDED_INTERSTITIAL: 'ca-app-pub-3940256099942544/5354046379',
+      APP_OPEN: 'ca-app-pub-3940256099942544/9257395921',
+    }
 
 // ============== Initialize ==============
 
@@ -278,6 +291,19 @@ export async function prepareAppOpen(
  */
 export async function showAppOpen(): Promise<ShowAppOpenResult> {
   return await invoke<ShowAppOpenResult>('plugin:google-admob|show_app_open')
+}
+
+// ============== Events ==============
+
+/**
+ * Subscribe to ad lifecycle events (loaded, failedToLoad, opened, closed,
+ * clicked, impression, failedToShow, reward) emitted by any ad instance.
+ * @returns A listener handle; call `.unregister()` to stop listening
+ */
+export async function onAdEvent(
+  handler: (event: AdEvent) => void
+): Promise<PluginListener> {
+  return await addPluginListener('google-admob', 'adEvent', handler)
 }
 
 // ============== Legacy (keeping for compatibility) ==============
